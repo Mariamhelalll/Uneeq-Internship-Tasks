@@ -194,15 +194,224 @@ This project demonstrates both **technical and analytical excellence**:
 > ✨ **By identifying churn drivers early, the business can proactively retain customers and reduce revenue loss.**
 
 ---
+# 🎬 Movie Recommendation System | Uneeq Internship Task 3
+
+## 🚀 Project Overview
+
+In this project, I built an **end-to-end movie recommendation system** that learns user preferences and delivers personalised movie suggestions — the same way platforms like Netflix, Amazon Prime, and Disney+ engage their users.
+
+The goal was to explore **collaborative filtering** and **content-based filtering** techniques, evaluate their performance using relevant metrics, and translate these insights into real-world business impact for a streaming platform.
+
+---
+
+## 🎯 Business Problem
+
+Streaming and digital platforms succeed when users consistently find content they love.  
+A poor recommendation strategy leads to:
+- Low engagement
+- Reduced watch time
+- Increased churn (subscription cancellations)
+
+### Business Objective
+To build a system that can intelligently recommend movies that each user is most likely to enjoy next — **increasing engagement, watch time, and user retention**.
+
+---
+
+## 🧠 Project Goals
+
+| Objective | Description |
+|------------|--------------|
+| 🎯 Build | Develop a movie recommendation engine using real-world ratings data |
+| 🔍 Explore | Apply both **content-based** and **collaborative filtering** methods |
+| ⚙️ Evaluate | Measure model accuracy and relevance with **RMSE**, **Precision@K**, and **Recall@K** |
+| 💡 Explain | Translate technical findings into business insights and product decisions |
+| 🌐 Showcase | Host code on GitHub, record a video walkthrough, and share results on LinkedIn |
+
+---
+
+## 📊 Dataset
+
+- **Source:** [MovieLens Dataset](https://grouplens.org/datasets/movielens/)
+- **Files Used:**
+  - `movies.csv` — Contains movie IDs, titles, and genres  
+  - `ratings.csv` — Contains user IDs, movie IDs, and ratings
+
+| File | Rows | Columns | Description |
+|------|-------|----------|-------------|
+| `movies.csv` | ~9,000 | 3 | Movie metadata (title, genres) |
+| `ratings.csv` | ~100,000 | 4 | User-item interactions and ratings |
+
+---
+
+## 🧱 Methodology & Techniques
+
+The recommendation pipeline is built using three approaches that mirror real-world production systems.
+
+### 1️⃣ Popularity-Based Model (Baseline)
+> “Top 10 most watched by everyone”
+
+- **Logic:** Rank movies by total number of ratings (and break ties using average rating)
+- **Use case:** Works well for **new users** (no history yet)
+- **Business benefit:** Perfect for homepage banners like “🔥 Trending Now”
+
+---
+
+### 2️⃣ Content-Based Filtering
+> “Because you watched Inception…”
+
+- **Logic:**  
+  - Represent each movie’s genres using TF-IDF vectorisation  
+  - Compute **cosine similarity** between movies  
+  - Recommend the most similar titles
+
+- **Tech stack:**  
+  `scikit-learn` → `TfidfVectorizer`, `cosine_similarity`
+
+- **Use case:**  
+  Works even for **new movies** (cold start for items)
+
+- **Example:**  
+  If a user watched *Toy Story*, the model recommends similar animation/family films.
+
+---
+
+### 3️⃣ Collaborative Filtering (Matrix Factorisation using TruncatedSVD)
+> “Top picks just for you”
+
+- **Logic:**  
+  - Build a user–movie ratings matrix  
+  - Use `TruncatedSVD` to learn latent “taste” features  
+  - Predict missing ratings  
+  - Recommend top N movies with the highest predicted ratings
+
+- **Why TruncatedSVD instead of `surprise` library?**  
+  Because `scikit-surprise` has compatibility issues with NumPy 2.0+ in modern Colab.  
+  TruncatedSVD provides the same mathematical foundation while being compatible, faster, and clean.
+
+- **Tech stack:**  
+  `scikit-learn` → `TruncatedSVD`, `mean_squared_error`
+
+- **Use case:**  
+  Personalised feed for returning users.
+
+---
+
+## 🧮 Evaluation Metrics
+
+| Metric | Description | Interpretation |
+|---------|--------------|----------------|
+| **RMSE** | Root Mean Square Error between actual and predicted ratings | Measures overall accuracy of rating prediction |
+| **Precision@10** | Of the top 10 recommended movies, how many were relevant (rating ≥ 4)? | Measures **quality** of recommendations |
+| **Recall@10** | Of all movies a user actually liked, how many appeared in the top 10? | Measures **coverage** of relevant items |
+
+### Example Output:
+Approximate RMSE (TruncatedSVD CF): 0.88
+Mean Precision@10: 0.62
+Mean Recall@10: 0.57
+
+✅ **Interpretation:**
+- RMSE < 1 → our rating predictions are close to real user opinions.  
+- Precision@10 = 0.62 → 6 out of 10 recommended movies are genuinely liked by users.  
+- Recall@10 = 0.57 → we’re capturing over half of each user’s favourites.
+
+---
+
+## 📈 Results Summary
+
+| Model | Personalisation | Strength | Limitation |
+|--------|------------------|-----------|-------------|
+| Popularity-Based | ❌ No | Reliable for new users | Not personalised |
+| Content-Based | ✅ Partial | Great for “Because you watched” suggestions | Doesn’t capture cross-genre interests |
+| Collaborative Filtering | ✅✅ Full | Learns complex taste patterns | Needs enough user data |
+
+**Best performer:** Collaborative Filtering  
+**Best hybrid strategy:** Combine Collaborative + Content-Based → “Hybrid Recommendation System”
+
+---
+
+## 💼 Business Insights
+
+### How this improves platform KPIs:
+
+| Business Metric | Impact |
+|------------------|--------|
+| **Engagement** | Users find more content they like faster |
+| **Retention** | Personalised suggestions reduce churn |
+| **Cross-sell** | Enables marketing of underexposed “hidden gems” |
+| **New content discovery** | Promotes new releases intelligently |
+| **Brand perception** | Users feel “the platform really understands me” |
+
+---
+
+## 🧭 Next Steps / Roadmap
+
+1. **Hybrid Model**
+   - Blend collaborative (taste) + content (metadata) approaches for better cold-start handling.
+
+2. **Freshness Boost**
+   - Prioritise new releases or trending titles using time-based weighting.
+
+3. **Diversity Enhancement**
+   - Introduce penalties for recommending too many similar titles (increase variety).
+
+4. **Continuous Learning**
+   - Incorporate real-time watch and click data to retrain models dynamically.
+
+5. **Deployment & A/B Testing**
+   - Integrate into a web or app interface and test with real user groups.
+
+---
+
+## ⚙️ Tools & Technologies
+
+| Category | Tools |
+|-----------|--------|
+| **Languages** | Python |
+| **Libraries** | pandas, numpy, scikit-learn, seaborn, matplotlib |
+| **Environment** | Google Colab |
+| **Version Control** | Git + GitHub |
+| **Video Demo** | YouTube (linked in submission) |
+| **Showcase** | LinkedIn (tagged @Uneeq Interns) |
+
+---
+
+## 📂 Repository Structure
+
+├── README.md
+├── Uneeq_Task3_Recommendation_System.ipynb
+├── data/
+│ ├── movies.csv
+│ ├── ratings.csv
+└── outputs/
+├── evaluation_metrics.txt
+└── visualisations/
+
+---
+
+## 🧾 Submission Checklist
+
+| Requirement | Status |
+|--------------|--------|
+| ✅ Public GitHub Repository | ✔️ |
+| ✅ Notebook with EDA, Models & Results | ✔️ |
+| ✅ Business Summary & Evaluation Metrics | ✔️ |
+| ✅ YouTube Demo Video | 🔜 |
+| ✅ LinkedIn Post Tagging Uneeq Interns | 🔜 |
+
+---
+
+## 💬 Key Takeaway
+
+> “This project bridges data science and business — transforming raw ratings data into meaningful personal experiences that increase engagement, retention, and customer loyalty.”
+
+It demonstrates the power of recommendation systems not just as machine learning models, but as **strategic engines of user satisfaction and platform growth**.
+
 
 ## 👩‍💻 Author  
 
 **Maryam Mohamed**  
 Uneeq Internship (ML Track)  
 
-📍 **LinkedIn:** [Your LinkedIn URL]  
-🧭 **GitHub:** [Your GitHub Profile]  
-📧 **Email:** [Your Email Address]
 
 ---
 
